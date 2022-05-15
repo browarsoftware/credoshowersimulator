@@ -7,12 +7,15 @@ package credo;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.PrintStream;
 
 /**
  *
  * @author Tomasz Hachaj
  */
 public class ArrayUtils {
+        public static PrintStream out = System.out;
+    
         public static short[][]makeArrayShort(int sizeX, int sizyY, boolean verbose) {
         short[][]array = new short[sizeX][];
         long percent = (long)((double)sizeX / 100.0);
@@ -21,9 +24,9 @@ public class ArrayUtils {
         int percentCount = 0;
         int percentStep = 10;
         for (int a = 0; a < array.length; a++){
-            if (verbose && a % (percent * percentStep) == 0)
+            if (verbose && out != null && a % (percent * percentStep) == 0)
             {
-                System.out.println(Integer.toString(percentCount) + "%");
+                out.println(Integer.toString(percentCount) + "%");
                 percentCount+=percentStep;
             }
             array[a] = new short[sizyY];
@@ -39,9 +42,9 @@ public class ArrayUtils {
         int percentCount = 0;
         int percentStep = 10;
         for (int a = 0; a < array.length; a++){
-            if (verbose && a % (percent * percentStep) == 0)
+            if (verbose && out != null && a % (percent * percentStep) == 0)
             {
-                System.out.println(Integer.toString(percentCount) + "%");
+                out.println(Integer.toString(percentCount) + "%");
                 percentCount+=percentStep;
             }
             array[a] = new int[sizyY];

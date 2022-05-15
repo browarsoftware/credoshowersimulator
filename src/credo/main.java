@@ -8,6 +8,7 @@ package credo;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import javax.imageio.ImageIO;
 
 /**
@@ -28,6 +29,12 @@ public class main {
         double offsetY = 0;
         int N = 1000000;
         Simulation sim = new Simulation();
+        PrintStream out = System.out;
+        ArrayUtils.out = out;
+        sim.out = out;
+        BackgroundDistribution.out = out;
+        ShowerDistribution.out = out;
+        
         sim.init(th, phi, offsetX, offsetY, N, true);
         sim.runSimulation();
         //find detection
@@ -47,6 +54,6 @@ public class main {
         ImageIO.write(img, "png", outputfile);
         ImageIO.write(imgLog, "png", outputfileLog);
         ImageIO.write(imdDet, "png", outputfileDet);
-        System.out.println("Done");
+        out.println("Done");
     }
 }

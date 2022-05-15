@@ -5,6 +5,7 @@
  */
 package credo;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -12,6 +13,7 @@ import java.util.ArrayList;
  * @author Tomasz Hachaj based on Python code of Łukasz Bibrzycki
  */
 public class ShowerDistribution {
+    public static PrintStream out = System.out;
     public static double r0=100;
     public static double s=1.3;
     public static double NRO=10000;
@@ -106,8 +108,8 @@ public class ShowerDistribution {
             x = RandomUtils.nextDouble(xmin, xmax);
             y = RandomUtils.nextDouble(pmin, pmax);
             if (y < ro(x, r0, s, NRO)){
-                if (naccept % (percent * percentStep) == 0 && verbose) {
-                    System.out.println(Integer.toString(percentCount) + "%");
+                if (out != null && naccept % (percent * percentStep) == 0 && verbose) {
+                    out.println(Integer.toString(percentCount) + "%");
                     percentCount+=percentStep;
                 }
                 xx[naccept] = x;

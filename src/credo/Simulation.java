@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +35,7 @@ public class Simulation {
     public static int grid_size_y = 0;//in centimeters
     
     public boolean verbose = true;
+    public PrintStream out = System.out; 
     
     double th = 0;
     double phi =0;
@@ -79,25 +81,25 @@ public class Simulation {
     public void init(){
         long backgroundMionsCount = (int)(region_size_x * region_size_y * backgroundMezonsPerSquaredCentimeter / (sample_size_x * sample_size_y));
         //Arrays initialization
-        if (verbose) System.out.println("Assigning memory for noise array");
+        if (verbose && out != null) out.println("Assigning memory for noise array");
         background = ArrayUtils.makeArrayShort(grid_size_x, grid_size_y, verbose);
-        if (verbose) System.out.println("Assigning memory for hit array");
+        if (verbose && out != null) out.println("Assigning memory for hit array");
         hit = ArrayUtils.makeArrayShort(grid_size_x, grid_size_y, verbose);
         //System.out.println("Assigning memory detector array");
         //detectors = ArrayUtils.makeArrayShort(grid_size_x, grid_size_y, verbose);
         
         //Bacground
-        if (verbose) System.out.println("Initializating background");
+        if (verbose && out != null) out.println("Initializating background");
         BackgroundDistribution.initializeBackground(background, backgroundMionsCount, verbose);
         //Hit
-        if (verbose) System.out.println("Hit generation");       
+        if (verbose && out != null) out.println("Hit generation");       
         hitdata = ShowerDistribution.generateHit(N, th, phi, verbose);
     }
     
     public void runSimulation() throws SimulatorException {
         if (background == null || hit == null || hitdata == null) 
             throw new SimulatorException("Simulation not initialized. Run init() method first.");
-        if (verbose) System.out.println("Assigning hit to array");
+        if (verbose && out != null) out.println("Assigning hit to array");
         //in centimeters
         double offsetXScale = offsetX / sample_size_x;
         double offsetYScale = offsetY / sample_size_y;
@@ -108,7 +110,7 @@ public class Simulation {
     ArrayList<Detection> detections = new ArrayList<Detection>();
 
     public void loadDetectors(String fileName, boolean checkOverlapping) throws SimulatorException{
-        if (verbose) System.out.println("Loading detectors");
+        if (verbose && out != null) out.println("Loading detectors");
         detectors.clear();
         int lineCount = 0;
         BufferedReader reader;
@@ -142,7 +144,7 @@ public class Simulation {
     }
     
     public void runDetection() {
-        if (verbose) System.out.println("Running detection");
+        if (verbose && out != null) out.println("Running detection");
         detections.clear();
         for (Detector d : detectors) {
             double x_left = d.x - (d.w / 2.0);
@@ -171,7 +173,7 @@ public class Simulation {
     }
     
     public void saveDetections(String fileName) throws FileNotFoundException, IOException {
-        if (verbose) System.out.println("Saving detections");
+        if (verbose && out != null) out.println("Saving detections");
         File fout = new File(fileName);
 	FileOutputStream fos = new FileOutputStream(fout);
 	BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
@@ -229,11 +231,11 @@ public class Simulation {
     public BufferedImage getHitImgage(double scale, boolean logarithmic){
         //Debug image
         //double factor = 0.1;
-        if (verbose) System.out.println("Resampling hit data");
+        if (verbose && out != null) out.println("Resampling hit data");
         int[][]resampledHitData = ArrayUtils.resampleData(hit, scale);
-        if (verbose) System.out.println("Resampling background data");
+        if (verbose && out != null) out.println("Resampling background data");
         int[][]resampledBackgroundData = ArrayUtils.resampleData(background, scale);
-        if (verbose) System.out.println("Generating image");
+        if (verbose && out != null) out.println("Generating image");
         if (alut == null) {
             File lutFile = new File("alut.png");
             try {
