@@ -1,5 +1,7 @@
 #Cosmic-ray showers simulator
-[!https://markdownlivepreview.com/]
-Fast cosmic ray shower simulator for CREDO project.
+
+Fast cosmic ray shower simulator.
+
+Author: [Tomasz Hachaj](https://sppr.up.krakow.pl/hachaj/) based on Python code of Łukasz Bibrzycki 
 
 ![This is a alt text.](intro.png "Shower image")
