@@ -7,14 +7,17 @@ package credo;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -24,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 
@@ -64,6 +68,10 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     public ColorPane simulationTextPane = null;
     JScrollPane simulationTextPaneScrollPane = null;
     JButton simulationClearTextPane = null;
+
+    JPanel filePanel = null;
+    JButton openExperimentFileButton = null;
+    JTextField experimentFileNameTextField = null;
     
     JLabel vmMemoryLabel = null;
     
@@ -137,6 +145,15 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         updatevmMemoryLabel();
         mainPanel.add(vmMemoryLabel, BorderLayout.SOUTH);
         
+        filePanel = new JPanel(new FlowLayout());
+        openExperimentFileButton = new JButton("Choose experiment file");
+        openExperimentFileButton.addActionListener(this);
+        filePanel.add(openExperimentFileButton);
+        experimentFileNameTextField = new JTextField("                                  <NONE>                                  ");
+        experimentFileNameTextField.setEditable(false);
+        filePanel.add(experimentFileNameTextField);
+        
+        mainPanel.add(filePanel, BorderLayout.NORTH);
         //JLabel jl = new JLabel("akukukuku!");
         //getContentPane().add(jl, BorderLayout.CENTER);
         
@@ -174,13 +191,16 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         mainMenu.add(helpMenu);
         this.setJMenuBar(mainMenu);
         pack();
-        setSize(640, 480);
+        setSize(800, 600);
         setLocationRelativeTo(null);
         
         addTextToSimulationPane(infoColor, "Welcome to " + appName + "\n");
         
         mut = new MemoryUpdaterThread(this);
         mut.start();
+        
+        StartSplashScreenThread ssst = new StartSplashScreenThread(this);
+        ssst.start();
         /*
         addTextToSimulationPane("Akuku!\n", 1);
         addTextToSimulationPane("Akuku!\n", 2);
@@ -236,6 +256,23 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         addTextToSimulationPane(infoColor, VMInfo.fileSystemInfo);
     }
     
+    public void chooseExperimentFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        //fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setCurrentDirectory(new File("."));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            experimentFileNameTextField.setText(selectedFile.getAbsolutePath());
+            //System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+        }
+    }
+    
+    public void simmulationPlanSummary(){
+        addTextToSimulationPane(warningColor, "*********************************************************\n");
+        addTextToSimulationPane(warningColor, "Not yet implemented\n");
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == helpMenuAbout) {
@@ -252,6 +289,14 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
             vmInfo();
         }
         
+        if (ae.getSource() == simulationMenuPlanSummary) {
+            simmulationPlanSummary();
+        }
+        
+        
+        if (ae.getSource() == openExperimentFileButton) {
+            chooseExperimentFile();
+        }
         if (ae.getSource() == simulationMenuRun) {
             runSimulation();
         }

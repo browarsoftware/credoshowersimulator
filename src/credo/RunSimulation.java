@@ -5,13 +5,10 @@
  */
 package credo;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+import java.util.ArrayList;
+
 
 /**
  *
@@ -22,6 +19,21 @@ public class RunSimulation extends Thread{
     public RunSimulation(MainWindow mw){
         this.mw = mw;
     }
+    public void run(){
+        PrintStream out = new PrintStream(new CustomOutputStream(mw));
+        try {
+            ArrayList<ExperimentConfiguration> al = ExperimentConfiguration.ParseExperiment(mw.experimentFileNameTextField.getText());
+            Experiment exp = new Experiment(al);
+            exp.runExperiments(out);
+            //cleanup
+            System.gc();
+        } catch (SimulatorException ex) {
+            mw.addTextToSimulationPane(MainWindow.errorColor, ex.toString() + "\n");
+        } catch (IOException ex) {
+            mw.addTextToSimulationPane(MainWindow.errorColor, ex.toString() + "\n");
+        }
+    }
+    /*
     public void run(){
         //PrintStream out = System.out;
         PrintStream out = new PrintStream(new CustomOutputStream(mw));
@@ -72,5 +84,5 @@ public class RunSimulation extends Thread{
         } finally {
             mw.setUIEnable(true);
         }
-    }
+    }*/
 }
