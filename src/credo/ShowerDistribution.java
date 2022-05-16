@@ -21,6 +21,12 @@ public class ShowerDistribution {
     public static double xmin = 0.5;
     public static double xmax = 5.0 * ShowerDistribution.r0;
     
+    public static void setR0(double r0)
+    {
+        ShowerDistribution.r0 = r0;
+        ShowerDistribution.xmax = 5.0 * ShowerDistribution.r0;
+    }
+    
     public static double ro(double r, double r0, double s, double N){
         double ret = N / (2 * Math.PI * r0 * r0) * gamma.gamma(4.5 - s) / (gamma.gamma(s) * gamma.gamma(4.5 - 2 * s)) * Math.pow(r / r0, s-2) * Math.pow(1 + r/r0, s-4.5);
         return ret;

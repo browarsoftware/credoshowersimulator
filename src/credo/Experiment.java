@@ -35,6 +35,7 @@ public class Experiment {
         double offsetX = experimentConfiguration.offsetX;
         double offsetY = experimentConfiguration.offsetY;
         int N = experimentConfiguration.N;
+        ShowerDistribution.setR0(experimentConfiguration.r0);
         Simulation sim = new Simulation(experimentConfiguration.sampleSizeX, 
                                         experimentConfiguration.sampleSizeY, 
                                         experimentConfiguration.regionSizeX, 

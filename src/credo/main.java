@@ -27,7 +27,7 @@ public class main {
         double phi =180;
         double offsetX = 0;
         double offsetY = 0;
-        int N = 1000000;
+        int N = 100000;
         Simulation sim = new Simulation();
         PrintStream out = System.out;
         ArrayUtils.out = out;

@@ -39,3 +39,19 @@ Pozdro,
 * Symulacja co sekundę
  * @author Tomek
  */
+
+###############################
+
+Dorobić w konfiguracji eksperymentu możliwość zmiany rozmiaru pęku (r0)
+
+Paper o samej symulacji:
+1) Opisać jak modelowany jest pęk
+2) Opisać jak modelowane jest tło
+3) Opisać jak uwzględniany jest kąt padania strumienia (phi, theta)
+3) Opisać sposób symulacji (siadka o rozmiarze 1cm$2, różne rozmiary siadki, ile zajmuje pamięci, ile +/- trwa)
+4) Pierwsze wyniki - promień od centrum uderzenia, w którym gęstość cząstek jest większa od gęstości promieniowania tła
+5) Zakładamy że detektor ma 100% efektywność, częstotliwość pomiarów detekcji to 1 Hz (1 pomiar na swkundę)
+6) Przykładowe wyniki dla "rzadkiego" rozłożenia detektorów - w tym kierunku będą rozwijane badania
+
+Ile cząstek w promieniu r0?
+Oszacować ile cząstek jest w elipsie?

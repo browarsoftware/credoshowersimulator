@@ -16,6 +16,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -39,7 +40,7 @@ import javax.swing.ScrollPaneConstants;
  * @author Tomasz Hachaj
  */
 public class MainWindow extends JFrame implements ActionListener, WindowListener{
-    String appName = "CREDO showers simulator 1.0";
+    public static String appName = "Cosmic-ray showers simulator 1.0";
     public static final int messageColor = 0;
     public static final int warningColor = 1;
     public static final int errorColor = 2;
@@ -107,12 +108,11 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     }
     //https://stackoverflow.com/questions/6068398/how-to-add-text-different-color-on-jtextpane
     
-    
-    
-    public MainWindow(){
-        super("Credo shower simulator v. 1.0");
+    public void initializeGUI()
+    {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        ImageIcon img = new ImageIcon("icon.png");
+        setIconImage(img.getImage());
         mainPanel = new JPanel(new BorderLayout());
         getContentPane().add(mainPanel, BorderLayout.CENTER);
         
@@ -193,6 +193,11 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         pack();
         setSize(800, 600);
         setLocationRelativeTo(null);
+    }
+    
+    public MainWindow(){
+        super(MainWindow.appName);
+        initializeGUI();
         
         addTextToSimulationPane(infoColor, "Welcome to " + appName + "\n");
         
@@ -269,8 +274,17 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     }
     
     public void simmulationPlanSummary(){
-        addTextToSimulationPane(warningColor, "*********************************************************\n");
-        addTextToSimulationPane(warningColor, "Not yet implemented\n");
+        //addTextToSimulationPane(warningColor, "*********************************************************\n");
+        //addTextToSimulationPane(warningColor, "Not yet implemented\n");
+        addTextToSimulationPane(MainWindow.infoColor, "*********************************************************\n");
+        addTextToSimulationPane(MainWindow.infoColor, "Simmulation plan summary:\n");
+        boolean success = ExperimentConfiguration.validateExperimentFile(experimentFileNameTextField.getText(), this);
+        if (success) {
+            addTextToSimulationPane(MainWindow.specialColor, "Validation passed.\n");
+        } else {
+            addTextToSimulationPane(MainWindow.errorColor, "Validation not passed. There might be problems while running simulation.\n");
+        }
+        
     }
     
     @Override
