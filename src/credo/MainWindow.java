@@ -240,8 +240,15 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     }
     
     private void runSimulation(){
-        RunSimulation rs = new RunSimulation(this);
-        rs.start();
+        addTextToSimulationPane(infoColor, "*********************************************************\n");
+        addTextToSimulationPane(infoColor, "Starting simulation\n");
+        boolean returned = simmulationPlanSummary();
+        if (returned) {
+            RunSimulation rs = new RunSimulation(this);
+            rs.start();
+        } else {
+            addTextToSimulationPane(errorColor, "Simulation halted. Please correct erros in experiment file and try again.\n");
+        }
     }
     
     private void vmInfo(){
@@ -274,7 +281,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         }
     }
     
-    public void simmulationPlanSummary(){
+    public boolean simmulationPlanSummary(){
         //addTextToSimulationPane(warningColor, "*********************************************************\n");
         //addTextToSimulationPane(warningColor, "Not yet implemented\n");
         addTextToSimulationPane(MainWindow.infoColor, "*********************************************************\n");
@@ -282,8 +289,10 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         boolean success = ExperimentConfiguration.validateExperimentFile(experimentFileNameTextField.getText(), this);
         if (success) {
             addTextToSimulationPane(MainWindow.specialColor, "Validation passed.\n");
+            return true;
         } else {
             addTextToSimulationPane(MainWindow.errorColor, "Validation not passed. There might be problems while running simulation.\n");
+            return false;
         }
         
     }

@@ -101,9 +101,13 @@ public class ExperimentConfiguration {
             mw.addTextToSimulationPane(MainWindow.errorColor,ex.toString() + "\n");
             result = false;
         } catch (ArrayIndexOutOfBoundsException aioube) {
-            mw.addTextToSimulationPane(MainWindow.errorColor,"Parser error, it seems that experiment file is in the wrong format. be oppened. JAVA returned exception:\n");
+            mw.addTextToSimulationPane(MainWindow.errorColor,"Parser error, it seems that experiment file is in the wrong format. JAVA returned exception:\n");
             mw.addTextToSimulationPane(MainWindow.errorColor,aioube.toString() + "\n");
             result = false;
+        } catch (NumberFormatException nfe) {
+            mw.addTextToSimulationPane(MainWindow.errorColor,"Parser error, it seems that experiment file is in the wrong format. JAVA returned exception:\n");
+            mw.addTextToSimulationPane(MainWindow.errorColor,nfe.toString() + "\n");
+            result = false;            
         }
         return result;
     }
