@@ -1,4 +1,4 @@
-#Cosmic-ray showers simulator
+# Cosmic-ray showers simulator
 
 Fast cosmic ray shower simulator.
 
