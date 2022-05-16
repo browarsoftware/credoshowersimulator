@@ -20,6 +20,7 @@ public class RunSimulation extends Thread{
         this.mw = mw;
     }
     public void run(){
+        mw.setUIEnable(false);
         PrintStream out = new PrintStream(new CustomOutputStream(mw));
         try {
             ArrayList<ExperimentConfiguration> al = ExperimentConfiguration.ParseExperiment(mw.experimentFileNameTextField.getText());
@@ -31,6 +32,8 @@ public class RunSimulation extends Thread{
             mw.addTextToSimulationPane(MainWindow.errorColor, ex.toString() + "\n");
         } catch (IOException ex) {
             mw.addTextToSimulationPane(MainWindow.errorColor, ex.toString() + "\n");
+        } finally {
+            mw.setUIEnable(true);
         }
     }
     /*

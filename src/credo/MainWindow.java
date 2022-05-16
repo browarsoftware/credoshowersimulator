@@ -236,6 +236,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         fileMenu.setEnabled(enable);
         simulationMenu.setEnabled(enable);
         helpMenu.setEnabled(enable);
+        openExperimentFileButton.setEnabled(enable);
     }
     
     private void runSimulation(){
