@@ -33,6 +33,7 @@ public class ExperimentConfiguration {
     boolean calculateHit = true;
     String detectorsFile = "detectors0.conf";
     String outputDir = "results";
+    double outputImageScale = 0;
     
     public ExperimentConfiguration() {}
     public ExperimentConfiguration(String dataToParse, String myPath){
@@ -56,6 +57,7 @@ public class ExperimentConfiguration {
         else calculateHit = true;
         detectorsFile = myPath + "/" + splitted[14];
         outputDir = myPath + "/" + splitted[15];
+        outputImageScale = Double.parseDouble(splitted[16]);
     }
     
     public static boolean validateExperimentFile(String fileName, MainWindow mw){

@@ -15,6 +15,8 @@ public class Detector {
     public double y = 0;//in meters
     public double w = 0;//in meters
     public double h = 0;//in meters
+    public int hitCount = 0;
+    public int backgroundCount = 0;
 
     public Detector(int id, double x, double y, double w, double h) {
         this.id = id;

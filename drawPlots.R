@@ -1,0 +1,11 @@
+plot(df$r, df$s1.0, type="l", log="y", cex.axis = 1, las = 2, yaxt="n", col="cyan", xlab="r", ylab="log(ro)")
+lines(df$r, df$s1.1, type="l", log="y", cex.axis = 1, las = 2, xaxt="n", col="red")
+lines(df$r, df$s1.2, type="l", log="y", cex.axis = 1, las = 2, xaxt="n", col="magenta")
+lines(df$r, df$s1.3, type="l", log="y", cex.axis = 1, las = 2, xaxt="n", col="orange")
+lines(df$r, df$s1.4, type="l", log="y", cex.axis = 1, las = 2, xaxt="n", col="green")
+lines(df$r, df$s1.5, type="l", log="y", cex.axis = 1, las = 2, xaxt="n", col="brown")
+lines(df$r, df$s1.6, type="l", log="y", cex.axis = 1, las = 2, xaxt="n", col="pink")
+#axis(2,df$s1.0)
+axis(2, labels=c('10', '1', '0.1','0.01','0.001','0.0001','0'), at=c(10, 1, 0.1,0.01,0.001,0.0001,0), las=2)
+legend(800, 10, legend=c("s=1.0", "s=1.1","s=1.2", "s=1.3","s=1.4", "s=1.5","s=1.6"),
+       col=c("cyan", "red","magenta","orange","green","brown","pink"), lty=1, cex=0.8)

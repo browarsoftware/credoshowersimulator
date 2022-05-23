@@ -42,10 +42,10 @@ public class main {
         sim.runDetection();
         sim.saveDetections("detections.csv");
         //get images
-        BufferedImage img = sim.getHitImgage(0.1, false);
-        BufferedImage imgLog = sim.getHitImgage(0.1, true);
+        BufferedImage img = sim.getHitImgage(0.1, false, null);
+        BufferedImage imgLog = sim.getHitImgage(0.1, true, null);
         
-        BufferedImage imdDet = sim.getDetectionImgage(0.1, false);
+        BufferedImage imdDet = sim.getDetectionImgage(0.1, false, null);
         //Saving image
         File outputfile = new File("saved_lut.png");
         File outputfileLog = new File("savedLog_lut.png");

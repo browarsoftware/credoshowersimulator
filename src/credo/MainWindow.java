@@ -31,6 +31,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 
 //https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html
 //http://www.cs.fsu.edu/~jtbauer/cis3931/tutorial/ui/swing/menu.html
@@ -270,6 +271,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     }
     
     public void chooseExperimentFile() {
+        UIManager.put("FileChooser.readOnly", Boolean.TRUE);  
         JFileChooser fileChooser = new JFileChooser();
         //fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         fileChooser.setCurrentDirectory(new File("."));

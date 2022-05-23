@@ -32,6 +32,38 @@ public class ShowerDistribution {
         return ret;
     }
     
+    public static short[][] generateCircle(int sizeX, int sizeY, double offsetX, double offsetY, double r0, double th, double phi)
+    {
+        short[][] circle = ArrayUtils.makeArrayShort(sizeX, sizeY, false);
+        double r02sqrt = r0 * 100;
+        double th_ = th * Math.PI / 180.0;
+        double phi_ = phi * Math.PI / 180.0;
+        
+        double xx, yy, xx2, yy2;
+        for (double x = -sizeX/2; x < sizeX/2; x+=0.5)
+            for (double y = -sizeY/2; y < sizeY/2; y+=0.5) {
+                if (Math.sqrt((x * x) + (y * y)) <= r02sqrt) {
+                    //xx = x + offsetX;
+                    //yy = y + offsetY;
+                    //xx = x * Math.cos(phi_);
+                    //yy = y * Math.sin(phi_);
+                    xx = x;
+                    yy = y;
+                    
+                    
+                    
+                    xx = xx / Math.cos(th_);
+                    xx2 = xx;
+                    yy2 = yy;
+                    xx = (double)(sizeX / 2.0) +  xx2 * Math.cos(phi_) - yy2 * Math.sin(phi);
+                    yy = (double)(sizeY / 2.0) +  xx2 * Math.sin(phi_) + yy2 * Math.cos(phi_);
+                    if ((int)xx >= 0 && (int)xx < circle.length && (int)yy >= 0 && (int)yy < circle[0].length)
+                    circle[(int)xx][(int)yy] = 1;
+                }
+            }
+        return circle;
+    }
+    
     public static double[][] generateHit(int N, double th, double phi, boolean verbose)
     {
         ArrayList alret = generateHitArrayList(N, xmin, xmax, th, phi, verbose);
@@ -70,7 +102,7 @@ public class ShowerDistribution {
             xl[a] = xl[a] / Math.cos(th_);
             x = xl[a];
             y = yl[a];
-            xl[a] = x * Math.cos(phi_) - y * Math.sin(phi);
+            xl[a] = x * Math.cos(phi_) - y * Math.sin(phi_);
             yl[a] = x * Math.sin(phi_) + y * Math.cos(phi_);
         }
         ArrayList retal = new ArrayList();

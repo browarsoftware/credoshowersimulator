@@ -59,7 +59,7 @@ public class ArrayUtils {
         return image;
     }
     
-        public static int[][] sumArrays(int[][]array1, int[][]array2){
+    public static int[][] sumArrays(int[][]array1, int[][]array2){
         int [][]res = ArrayUtils.makeArrayInt(array1.length, array1[0].length, false);
         for (int a = 0; a < array1.length; a++)
             for (int b = 0; b < array1[0].length; b++)
@@ -89,7 +89,22 @@ public class ArrayUtils {
         return minValue;
     }
     
-        public static int[][] resampleData(short[][]hit, double factor){
+    public static int[][] resampleDataInt(int[][]hit, double factor){
+        int xxx = (int)(factor * hit.length);
+        int yyy = (int)(factor * hit[0].length);
+        
+        int[][]resampledData = ArrayUtils.makeArrayInt(xxx, yyy, false);
+        for (int a = 0; a < hit.length; a++)
+            for (int b = 0; b < hit[0].length; b++){
+                int x2 = (int)(a * factor);
+                int y2 = (int)(b * factor);
+                if (hit[a][b] > 0)
+                    resampledData[x2][y2] = resampledData[x2][y2] + 1;
+            }
+        return resampledData;
+    }
+    
+    public static int[][] resampleData(short[][]hit, double factor){
         int xxx = (int)(factor * hit.length);
         int yyy = (int)(factor * hit[0].length);
         
@@ -116,12 +131,15 @@ public class ArrayUtils {
         }
     }   
     
-    public static BufferedImage generateImage(int[][]resampledData, int[][]resampledBackgroundData, boolean useLog, BufferedImage lookupTable){
+    public static BufferedImage generateImage(int[][]resampledData, int[][]resampledBackgroundData, 
+            boolean useLog, BufferedImage lookupTable, double[]minMax){
         int xxx = resampledData.length;
         int yyy = resampledData[0].length;
         int[]imageDate = new int[xxx * yyy * 3];
         
-        int[][]sumArray = ArrayUtils.sumArrays(resampledData, resampledBackgroundData);
+        int[][]sumArray = null;
+        if (resampledBackgroundData != null) sumArray = ArrayUtils.sumArrays(resampledData, resampledBackgroundData);
+        else sumArray = resampledData;
         if (useLog){
             for (int a = 0; a < sumArray.length; a++)
                 for (int b = 0; b < sumArray[0].length; b++)
@@ -129,6 +147,11 @@ public class ArrayUtils {
         }
         int max = ArrayUtils.findMax(sumArray);
         int min = ArrayUtils.findMin(sumArray);
+        if (minMax != null){
+            minMax[0] = min;
+            minMax[1] = max;
+        }
+            
         /*int maxData = findMax(resampledData);
         int maxBackground = findMax(resampledBackgroundData);
         int max = Math.max(maxData, maxBackground);*/
@@ -147,6 +170,7 @@ public class ArrayUtils {
                 
                 //scalling to 0-255 range
                 int value = (int)(aCoef * (double)sumArray[x_coord][y_coord] + bCoef);
+                //int value = (int)sumArray[x_coord][y_coord];
                 if (value > 255) value = 255;
                 if (value < 0) value = 0;
                 //lookup table coloring

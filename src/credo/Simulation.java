@@ -42,6 +42,7 @@ public class Simulation {
     double offsetX = 0;
     double offsetY = 0;
     int N = 100000;
+    //public long hitCountInCircle = -1;
     
     BufferedImage alut = null;
     
@@ -77,6 +78,7 @@ public class Simulation {
     public short[][]hit = null;
     //public short[][]detectors = null;
     public double[][]hitdata = null;
+    //short[][] circle = null;
     
     public void init(){
         long backgroundMionsCount = (int)(region_size_x * region_size_y * backgroundMezonsPerSquaredCentimeter / (sample_size_x * sample_size_y));
@@ -88,12 +90,14 @@ public class Simulation {
         //System.out.println("Assigning memory detector array");
         //detectors = ArrayUtils.makeArrayShort(grid_size_x, grid_size_y, verbose);
         
-        //Bacground
+        //Background
         if (verbose && out != null) out.println("Initializating background");
         BackgroundDistribution.initializeBackground(background, backgroundMionsCount, verbose);
         //Hit
         if (verbose && out != null) out.println("Hit generation");       
         hitdata = ShowerDistribution.generateHit(N, th, phi, verbose);
+        
+        //circle = ShowerDistribution.generateCircle(grid_size_x, grid_size_y, offsetX, offsetY, ShowerDistribution.r0, th, phi);
     }
     
     public void runSimulation() throws SimulatorException {
@@ -104,6 +108,17 @@ public class Simulation {
         double offsetXScale = offsetX / sample_size_x;
         double offsetYScale = offsetY / sample_size_y;
         ArrayUtils.assignHitToArray(hit, hitdata, offsetXScale, offsetYScale);
+        /*
+        if (circle != null) {
+            long count = 0;
+            for (int a = 0; a < hit.length; a++)
+                for (int b = 0; b < hit.length; b++) {
+                    if (hit[a][b] > 0 && circle[a][b] > 0) {
+                        count++;
+                    }
+                }
+            hitCountInCircle = count;
+        }*/
     }
     
     ArrayList<Detector> detectors = new ArrayList<Detector>();
@@ -166,10 +181,26 @@ public class Simulation {
                             double x = (a - ((double)hit.length / 2.0)) / 100.0;
                             double y = (b - ((double)hit.length / 2.0)) / 100.0;
                             detections.add(new Detection(x, y, background[a][b], hit[a][b], d.id));
+                            d.backgroundCount +=  background[a][b];
+                            d.hitCount +=  hit[a][b];
                         }
                     }
                 }
         }
+    }
+
+    public void saveDetectors(String fileName) throws FileNotFoundException, IOException {
+        if (verbose && out != null) out.println("Saving detectors");
+        File fout = new File(fileName);
+	FileOutputStream fos = new FileOutputStream(fout);
+	BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+        bw.write("id,x,y,w,h,background,hit\n");
+        for (Detector d : detectors) {
+            bw.write(Integer.toString(d.id) + "," + Double.toString(d.x) + "," + Double.toString(d.y) + "," 
+                    + Double.toString(d.w) + "," + Double.toString(d.h) + ","
+                    + Integer.toString(d.backgroundCount) + "," + Integer.toString(d.hitCount) + "\n");
+        }
+	bw.close();
     }
     
     public void saveDetections(String fileName) throws FileNotFoundException, IOException {
@@ -185,7 +216,40 @@ public class Simulation {
 	bw.close();
     }
     
-    public BufferedImage getDetectionImgage(double scale, boolean logarithmic){
+    public BufferedImage getDetectorImgage(double scale, boolean logarithmic, double[]minMax){
+        //Debug image
+        //double factor = 0.1;
+        int xxx = (int)(hit.length);
+        int yyy = (int)(hit[0].length);
+        int[][]resampledData = ArrayUtils.makeArrayInt(xxx, yyy, false);
+        //int[][]fooData = ArrayUtils.makeArrayInt(xxx, yyy, false);
+        for (Detector d : detectors) {
+            double x_left = d.x - (d.w / 2.0);
+            double x_right = d.x + (d.w / 2.0);
+            
+            double y_bottom = d.y - (d.h / 2.0);
+            double y_top = d.y + (d.h / 2.0);
+            
+            int x_start = (int)(((double)hit.length / 2.0) + 100.0 * x_left);
+            int x_stop = (int)(((double)hit.length / 2.0) + 100.0 * x_right);
+            
+            int y_start = (int)(((double)hit.length / 2.0) + 100.0 * y_bottom);
+            int y_stop = (int)(((double)hit.length / 2.0) + 100.0 * y_top);
+            
+            for (int a = x_start; a < x_stop; a++)
+                for (int b = y_start; b < y_stop; b++) {
+                    if (a > 0 && a < hit.length && b > 0 && b < hit[0].length) {
+                        resampledData[a][b] = d.hitCount + d.backgroundCount;
+                    }
+                }
+        }
+        int[][]resampledData2 = ArrayUtils.resampleDataInt(resampledData, scale);
+        BufferedImage img = ArrayUtils.generateImage(resampledData2, null, logarithmic, alut, minMax);
+        return img;
+    }
+    
+    
+    public BufferedImage getDetectionImgage(double scale, boolean logarithmic, double[]minMax){
         //Debug image
         //double factor = 0.1;
         int xxx = (int)(scale * hit.length);
@@ -205,10 +269,11 @@ public class Simulation {
             try {
                 alut = ImageIO.read(lutFile);
             } catch (IOException ex) {
-                Logger.getLogger(main.class.getName()).log(Level.SEVERE, null, ex);
+                if (out != null)
+                    out.println(ex.toString());
             }
         }
-        BufferedImage img = ArrayUtils.generateImage(resampledData, fooData, logarithmic, alut);
+        BufferedImage img = ArrayUtils.generateImage(resampledData, fooData, logarithmic, alut, minMax);
         return img;
         /*
         if (verbose) System.out.println("Resampling hit data");
@@ -228,7 +293,7 @@ public class Simulation {
         return img;*/
     }
     
-    public BufferedImage getHitImgage(double scale, boolean logarithmic){
+    public BufferedImage getHitImgage(double scale, boolean logarithmic, double[]minMax){
         //Debug image
         //double factor = 0.1;
         if (verbose && out != null) out.println("Resampling hit data");
@@ -244,7 +309,27 @@ public class Simulation {
                 Logger.getLogger(main.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        BufferedImage img = ArrayUtils.generateImage(resampledHitData, resampledBackgroundData, logarithmic, alut);
+        BufferedImage img = ArrayUtils.generateImage(resampledHitData, resampledBackgroundData, logarithmic, alut, minMax);
         return img;
     }
+    /*
+    public BufferedImage getCircleImgage(double scale){
+        //Debug image
+        //double factor = 0.1;
+        if (verbose && out != null) out.println("Resampling hit data");
+        int[][]resampledCircleData = ArrayUtils.resampleData(circle, scale);
+        if (verbose && out != null) out.println("Resampling background data");
+        int[][]resampledBackgroundData = ArrayUtils.resampleData(background, scale);
+        if (verbose && out != null) out.println("Generating image");
+        if (alut == null) {
+            File lutFile = new File("alut.png");
+            try {
+                alut = ImageIO.read(lutFile);
+            } catch (IOException ex) {
+                Logger.getLogger(main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        BufferedImage img = ArrayUtils.generateImage(resampledCircleData, null, false, null, null);
+        return img;
+    }*/
 }
