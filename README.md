@@ -39,6 +39,6 @@ Use scripts GenerateDetectors.py to generate random distribution of not overlapp
 
 Use scripts GenerateImage.py to visualize results of experiment.
 
-If you have questions, concerns, remarks contact Author: [Tomasz Hachaj](https://sppr.up.krakow.pl/hachaj/).
+If you have questions, concerns, remarks contact author: [Tomasz Hachaj](https://sppr.up.krakow.pl/hachaj/).
 
 Have a nice day! =)
